@@ -1,0 +1,86 @@
+<html>
+	<center>
+		<body>
+			<h1>Accounts</h1>
+			
+			<h3>
+				<a href="http://127.0.0.1:5000/user/{{user_url}}">Home</a><br>
+				<a href="http://127.0.0.1:5000/close">Close connection</a>
+			</h3> 
+			
+			<form method="POST" action="">
+				<input type="submit" name="search" value="Search"/>
+				User <input type="text" name="search_user" value="{{res[0]}}"/>
+				Admin <select name="search_admin" value="{{res[1]}}">
+					{% if res[1] == "YES" %}
+						<option value="YES">YES</option>
+						<option value="NO">NO</option>
+						<option value="ALL">ALL</option>
+					{% elif res[1] == "NO" %}
+						<option value="NO">NO</option>
+						<option value="YES">YES</option>
+						<option value="ALL">ALL</option>
+					{% else %}
+						<option value="ALL">ALL</option>
+						<option value="YES">YES</option>
+						<option value="NO">NO</option>
+					{% endif %}
+				</select>
+			</form>
+			
+			<table border = 1>
+				<tr>
+				{% for c in columns %}
+					{% set o = "order_" ~ c %}
+					{% if c == "Songs" or c == "Playlists" %}
+						{% set c = "Total " ~ c %}
+					{% endif %}
+					<th>
+						<form method="POST" action="">
+							<input style="font-weight:bold;" type="submit" name="{{o}}" value="{{c}}"/>
+						</form>
+					</th>
+				{% endfor %}
+				<th></th>
+				</tr>
+				{% for row in rows %}
+					<tr>
+						{% for r, v in row.items() %}
+							{% if r == "User" %}
+								<td style="text-align:center"><a href="http://127.0.0.1:5000/user/{{v}}_admin_{{row['Admin']}}">{{v}}</a></td>
+							{% elif r == "Admin" %}
+								<td style="text-align:center">
+									{% if row['Id'] == user_id %}
+										{{v}}
+									{% else %}
+										<form method="POST" action="">
+											<select name="is_admin">
+												{% if v == "YES" %}
+													<option value="YES">YES</option>
+													<option value="NO">NO</option>
+												{% elif v == "NO" %}
+													<option value="NO">NO</option>
+													<option value="YES">YES</option>
+												{% endif %}
+											</select><br>
+											<input type="submit" name="{{row['User']}}" value="OK"/>
+										</form>
+									{% endif %}
+								</td>
+							{% else %}
+								<td style="text-align:center">{{v}}</td>
+							{% endif %}
+						{% endfor %}
+						<td style="text-align:center">
+							{% if row['Id'] != user_id %}
+								<form method="POST" action="">
+									<input onclick="return confirm('Warning: Deleting this user is permanent!\nAll data managed and created by this user will be removed.');" type="submit" name="{{row['User']}}" value="Delete"/>
+								</form>
+							{% endif %}
+						</td>
+					</tr>
+				{% endfor %}
+			</table>
+		</body>
+	</center>
+</html>

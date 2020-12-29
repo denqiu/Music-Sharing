@@ -1,0 +1,27 @@
+<html>
+	<center>
+		<body onload="alert_error()">
+			<h1>Sign Up</h1>
+
+			<form method="POST" action="">
+				Username <input type="text" name="user_name" value="{{user_name}}"/><br>
+				Password <input type="password" name="password"/><br>
+				<input type="submit" value="Sign Up"/>
+			</form>
+
+			<h3>
+				<a href="http://127.0.0.1:5000/">Welcome</a><br>
+				<a href="http://127.0.0.1:5000/close">Close connection</a>
+			</h3> 
+		</body>
+		
+		<script>
+			function alert_error() {
+				var e = new DOMParser().parseFromString("{{error_msg}}", "text/html").documentElement.textContent;
+				if (e != "") {
+					alert(e);
+				}
+			}
+		</script>
+	</center>
+</html>

@@ -1,0 +1,74 @@
+<html>
+	<center>
+		<body>
+			<h1>Welcome</h1>
+			
+			<h3>
+				{% if not is_logged %}
+					<a href="http://127.0.0.1:5000/login">Login</a><br>
+					<a href="http://127.0.0.1:5000/sign_up">Sign up</a><br>
+				{% endif %}
+				{% if is_logged %}
+					<a href="http://127.0.0.1:5000/user/{{user_url}}">Home</a><br>
+				{% endif %}
+				<a href="http://127.0.0.1:5000/close">Close connection</a>
+			</h3>
+			
+			<form method="POST" action="">
+				Song <input type="text" name="search_song" value="{{res[0]}}"/>
+				User <input type="text" name="search_user" value="{{res[1]}}"/>
+				Artist <input type="text" name="search_artist" value="{{res[2]}}"/>
+				Genre <input type="text" name="search_genre" value="{{res[3]}}"/>
+				Playlist <input type="text" name="search_playlist" value="{{res[4]}}"/><br>
+				<input type="submit" name="search" value="Search"/>
+			</form>
+
+			<table border = 1>
+				<tr>
+				{% for c in columns %}
+					{% set o = "order_" ~ c %}
+					{% if c == "Download" or c == "Play" %}
+						{% set c = c ~ "s" %}
+					{% endif %}
+					<th>
+						<form method="POST" action="">
+							<input style="font-weight:bold;" type="submit" name="{{o}}" value="{{c}}"/>
+						</form>
+					</th>
+				{% endfor %}
+				</tr>
+				{% for row in rows %}
+					<tr>
+						{% for r, v in row.items() %}
+							{% if not (r == "Id" or r == "Admin") %}
+								{% if r == "Song" %}
+									<td style="text-align:center"><a href="http://127.0.0.1:5000/song/{{v}}_user_{{row['User']}}_id_{{row['Id']}}">{{v}}</a></td>
+								{% elif r == "User" %}
+									<td style="text-align:center"><a href="http://127.0.0.1:5000/user/{{v}}_admin_{{row['Admin']}}">{{v}}</a></td>
+								{% elif r == "Download" %}
+									<td style="text-align:center">
+										{% if is_logged %}
+											<form method="POST" action="">
+												<input type="submit" name="{{row['Id']}}" value="{{r}}"/>
+											</form>
+										{% endif %}
+										{{v}}
+									</td>
+								{% elif r == "Play" %}
+									<td style="text-align:center">
+										<form method="POST" action="">
+											<input type="submit" name="{{row['Id']}}" value="{{r}}"/>
+										</form>
+										{{v}}
+									</td>
+								{% else %}
+									<td style="text-align:center">{{v}}</td>
+								{% endif %}
+							{% endif %}
+						{% endfor %}
+					</tr>
+				{% endfor %}
+			</table>
+		</body>
+	</center>
+</html>

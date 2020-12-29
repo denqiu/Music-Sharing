@@ -1,0 +1,104 @@
+<html>
+	<center>
+		<body>		
+			<h3>
+				{% if is_logged and logged_url == user_url and user_name != "" %}
+					<a href="http://127.0.0.1:5000/login">Log out</a><br>
+				{% endif %}
+				<a href="http://127.0.0.1:5000/">Welcome</a><br>
+				{% if is_logged and logged_url == user_url and user_name != "" %}
+					<a href="http://127.0.0.1:5000/upload/{{user_url}}">Upload song</a><br>
+				{% endif %}
+				{% if is_logged and logged_url == user_url and is_admin == "YES" %}
+					<a href="http://127.0.0.1:5000/accounts/{{user_url}}">Accounts</a><br>
+				{% endif %}
+				{% if is_logged and logged_url != user_url and logged_admin != "NO" %}
+					<a href="http://127.0.0.1:5000/user/{{logged_url}}">Home</a><br>
+					<a href="http://127.0.0.1:5000/accounts/{{logged_url}}">Accounts</a><br>
+				{% endif %}
+				<a href="http://127.0.0.1:5000/close">Close connection</a>
+			</h3>
+			
+			{% set is_edit = false %}
+			
+			{% if is_logged and user_name != "" %}
+				{% if logged_url == user_url %}
+					{% set is_edit = true %}
+				{% elif logged_url != user_url %}
+					{% if logged_admin == "YES" %}
+						{% set is_edit = true %}
+					{% endif %}
+				{% endif %}
+			{% endif %}
+			
+			{% if is_edit %}
+				<form method="post" action="">
+					<input type="submit" value="Change username"/>
+					<input type="text" name="new_user" value="{{user_name}}"/><br>
+				</form>
+			{% endif %}
+
+			<form method="POST" action="">
+				Song <input type="text" name="search_song" value="{{res[0]}}"/>
+				Artist <input type="text" name="search_artist" value="{{res[1]}}"/>
+				Genre <input type="text" name="search_genre" value="{{res[2]}}"/><br>
+				<input type="submit" name="search" value="Search"/>
+			</form>
+
+			<table border = 1>
+				<tr>
+				{% for c in columns %}
+					{% set o = "order_" ~ c %}
+					{% if c == "Download" or c == "Play" %}
+						{% set c = c ~ "s" %}
+					{% endif %}
+					<th>
+						<form method="POST" action="">
+							<input style="font-weight:bold;" type="submit" name="{{o}}" value="{{c}}"/>
+						</form>
+					</th>
+				{% endfor %}
+				{% if is_edit %}
+					<th></th>
+				{% endif %}
+				</tr>
+				{% for row in rows %}
+					<tr>
+						{% for r, v in row.items() %}
+							{% if not (r == "Id" or r == "User") %}
+								{% if r == "Song" %}
+									<td style="text-align:center"><a href="http://127.0.0.1:5000/song/{{v}}_user_{{user_name}}_id_{{row['Id']}}">{{v}}</a></td>
+								{% elif r == "Download" %}
+									<td style="text-align:center">
+										{% if is_logged %}
+											<form method="POST" action="">
+												<input type="submit" name="{{row['Id']}}" value="{{r}}"/>
+											</form>
+										{% endif %}
+										{{v}}
+									</td>
+								{% elif r == "Play" %}
+									<td style="text-align:center">
+										<form method="POST" action="">
+											<input type="submit" name="{{row['Id']}}" value="{{r}}"/>
+										</form>
+										{{v}}
+									</td>
+								{% else %}
+									<td style="text-align:center">{{v}}</td>
+								{% endif %}
+							{% endif %}
+						{% endfor %}
+						{% if is_edit %}
+							<td style="text-align:center">
+								<form method="POST" action="">
+									<input onclick="return confirm('Warning: Deleting this song is permanent!');" type="submit" name="{{row['Id']}}" value="Delete"/>
+								</form>
+							</td>
+						{% endif %}
+					</tr>
+				{% endfor %}
+			</table>
+		</body>
+	</center>
+</html>

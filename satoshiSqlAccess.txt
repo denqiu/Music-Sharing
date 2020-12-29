@@ -1,0 +1,4 @@
+user: dwq9172
+ssh_password: Dqade123w2
+db_password: Szpr1cyd0
+database: narayanFall2020group1

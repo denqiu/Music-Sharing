@@ -1,0 +1,53 @@
+<html>
+	<center>
+		<body onload="alert_error()">
+			{% set is_edit = false %}
+			
+			{% if is_logged and user_name != "" %}
+				{% if logged_url == user_url %}
+					{% set is_edit = true %}
+				{% elif logged_url != user_url %}
+					{% if logged_admin == "YES" %}
+						{% set is_edit = true %}
+					{% endif %}
+				{% endif %}
+			{% endif %}
+			
+			{% if is_edit %}
+				<form method="POST" action="">
+					Name <input type="text" name="song" value="{{song}}"/><br>
+					Artist <input type="text" name="artist" value="{{artist}}"/><br>
+					Genre <input type="text" name="genre" value="{{genre}}"/><br>
+					Description <textarea name="description" rows="4" cols="50">{{descr}}</textarea><br>
+					<input type="submit" value="Update song"/>
+				</form>
+			{% else %}
+				Name: {{song}}<br>
+				Artist: {{artist}}<br>
+				Genre: {{genre}}<br>
+				Description: {{descr}}<br>
+			{% endif %}
+			
+			<h3>
+				<a href="http://127.0.0.1:5000/">Welcome</a><br>
+				{% if is_logged %}
+					{% if logged_url == user_url %}
+						<a href="http://127.0.0.1:5000/user/{{user_url}}">Home</a><br>
+					{% elif logged_url != user_url %}
+						<a href="http://127.0.0.1:5000/user/{{logged_url}}">Home</a><br>
+					{% endif %}
+				{% endif %}
+				<a href="http://127.0.0.1:5000/close">Close connection</a>
+			</h3> 
+		</body>
+		
+		<script>
+			function alert_error() {
+				var e = new DOMParser().parseFromString("{{error_msg}}", "text/html").documentElement.textContent;
+				if (e != "") {
+					alert(e);
+				}
+			}
+		</script>
+	</center>
+</html>
