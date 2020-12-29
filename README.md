@@ -1,5 +1,5 @@
 # Music-Sharing
-A music web application for users to create and share songs. As this project only demonstrates database capabilities, note that actual song files are not considered and implemented.
+A music web application for users to create, search and share songs. As this project only demonstrates database capabilities, note that actual song files are not considered and implemented.
 
 Due to time constraints, messages and playlists were not implemented and this project is not deployed.
 
